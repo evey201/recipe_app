@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:recipe_app/services/auth_service.dart';
+import 'package:status_alert/status_alert.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -8,6 +10,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  GlobalKey<FormState> _loginFormKey = GlobalKey();
+
+  String? username, password;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,18 +54,44 @@ class _LoginPageState extends State<LoginPage> {
         width: MediaQuery.sizeOf(context).width * 0.9,
         height: MediaQuery.sizeOf(context).height * 0.3,
         child: Form(
+          key: _loginFormKey,
           child: Column(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               TextFormField(
+                initialValue: "kminchelle",
+                onSaved: (value) {
+                  setState(() {
+                    username = value;
+                  });
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your username';
+                  }
+                  return null;
+                },
                 decoration: const InputDecoration(
                   labelText: 'Username',
                   hintText: 'Enter your username',
                 ),
               ),
               TextFormField(
+                initialValue: "0lelplR",
+                onSaved: (value) {
+                  setState(() {
+                    password = value;
+                  });
+                },
+                obscureText: true,
+                validator: (value) {
+                  if (value == null || value.length < 6) {
+                    return 'Please enter a valid password';
+                  }
+                  return null;
+                },
                 decoration: const InputDecoration(
                   labelText: 'Password',
                   hintText: 'Enter your password',
@@ -75,9 +107,31 @@ class _LoginPageState extends State<LoginPage> {
     return SizedBox(
       width: MediaQuery.sizeOf(context).width * 0.6,
       child: ElevatedButton(
-        onPressed: () {}, 
-        child: const Text('Login')
-      ),
+          onPressed: () async {
+            if (_loginFormKey.currentState?.validate() ?? false) {
+              _loginFormKey.currentState?.save();
+              // print('Username: $_username, Password: $password');
+              bool isLoginSuccess =
+                  await AuthService().login(username!, password!);
+              if (isLoginSuccess) {
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Login failed'),
+                  ),
+                );
+                // StatusAlert.show(
+                //   context,
+                //   duration: const Duration(seconds: 2),
+                //   title: 'Login failed',
+                //   subtitle: 'Please try again',
+                //   configuration: const IconConfiguration(icon: Icons.error),
+                //   maxWidth: 260,
+                // );
+              }
+            }
+          },
+          child: const Text('Login')),
     );
   }
 }
