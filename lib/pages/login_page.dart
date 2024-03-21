@@ -10,7 +10,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  GlobalKey<FormState> _loginFormKey = GlobalKey();
+  final GlobalKey<FormState> _loginFormKey = GlobalKey();
 
   String? username, password;
 
@@ -114,12 +114,17 @@ class _LoginPageState extends State<LoginPage> {
               bool isLoginSuccess =
                   await AuthService().login(username!, password!);
               if (isLoginSuccess) {
+                if (mounted) {
+                  Navigator.pushReplacementNamed(context, '/home');
+                }
               } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Login failed'),
-                  ),
-                );
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Login failed'),
+                    ),
+                  );
+                }
                 // StatusAlert.show(
                 //   context,
                 //   duration: const Duration(seconds: 2),
