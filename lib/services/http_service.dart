@@ -44,4 +44,17 @@ class HTTPService {
       return null;
     }
   }
+
+  Future<Response?> get(String path) async {
+    try {
+      final response = await _dio.get(path);
+      return response;
+    } on DioException catch (e) {
+      // print(e);
+      if (e.response != null) {
+        return e.response;
+      }
+      return null;
+    }
+  }
 }
