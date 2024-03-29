@@ -24,11 +24,15 @@ class RecipePage extends StatelessWidget {
   }
 
   Widget _buildRecipePageUI(BuildContext context) {
-    return Column(
-      children: [
-        _recipeImage(context),
-        _recipeDetails(context),
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          _recipeImage(context),
+          _recipeDetails(context),
+          _recipeIngredients(context),
+          _recipeInstructions(context),
+        ],
+      ),
     );
   }
 
@@ -81,6 +85,81 @@ class RecipePage extends StatelessWidget {
               fontSize: 15,
               fontWeight: FontWeight.w500,
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _recipeIngredients(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      width: MediaQuery.sizeOf(context).width,
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Ingredients",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w300,
+            ),
+          ),
+          Column(
+            children: recipe.ingredients
+                .map(
+                  (ingredient) => Row(
+                    children: [
+                      const Icon(Icons.check_box),
+                      Text(
+                        " $ingredient",
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+                .toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _recipeInstructions(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      width: MediaQuery.sizeOf(context).width,
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Instructions",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w300,
+            ),
+          ),
+          Column(
+            children: recipe.instructions.map((e) {
+              return Text(
+                "${recipe.instructions.indexOf(e)}. $e\n",
+                maxLines: 3,
+                textAlign: TextAlign.start,
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w300,
+                )
+              );
+            }).toList(),
           ),
         ],
       ),
